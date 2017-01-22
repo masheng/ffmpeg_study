@@ -5,7 +5,6 @@ int getIndex=0;
 
 int video_init(playerContext *context){
     packet_queue_init(&context->video_packet_queue);
-    frame_queue_init(&context->video_frame_queue);
     context->outFrame=av_frame_alloc();
 
     unsigned char *out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  context->pCodecCtx[VIDEO]->width, context->pCodecCtx[VIDEO]->height,1));
@@ -31,52 +30,8 @@ int video_init(playerContext *context){
     context->sdlRect.y=0;
 
     SDL_CreateThread(player_refresh_thread,NULL,context);
-    //    SDL_CreateThread(video_decode_frame,NULL,context);
 }
 
-int video_decode_frame_thread(void *data){
-    playerContext *context=(playerContext *)data;
-    int ret = -1;
-    AVPacket packet;
-    AVFrame *frame=av_frame_alloc();
-    while(context->state != QUIT){
-        if(context->video_frame_queue.nb_packets > VIDEO_FRAME_MAX){
-            SDL_Delay(50);
-            continue;
-        }
-        ret = packet_queue_get(&context->video_packet_queue, &packet, 1);
-        if (ret == -1)
-        {
-            fprintf(stderr, "Get video packet error\n");
-            continue;
-        }
-
-        ret = avcodec_send_packet(context->pCodecCtx[VIDEO], &packet);
-        if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
-        {
-            fprintf(stderr, "send video packet error\n");
-            continue;
-        }
-
-        ret = avcodec_receive_frame(context->pCodecCtx[VIDEO], frame);
-        if (ret < 0 && ret != AVERROR_EOF)
-        {
-            fprintf(stderr, "receive video frame error\n");
-            continue;
-        }
-
-        ret = frame_queue_put(&context->video_frame_queue,frame);
-        if(ret == -1){
-            fprintf(stderr, "frame_queue_put error\n");
-            continue;
-        }
-    }
-
-    av_frame_free(&frame);
-    //    av_packet_free(&packet);
-
-    return 0;
-}
 
 int video_decode_frame(playerContext *context,AVFrame *frame){
     int ret = -1;
@@ -136,19 +91,5 @@ Uint32 show_video(Uint32 interval, void *data){
 int player_refresh_thread(void *opaque){
     playerContext *context=(playerContext *)opaque;
     context->timerID=SDL_AddTimer(40, show_video, context);
-
-    //    double delay=0.0;
-    //    SDL_Event event;
-
-    //    while (context->state != QUIT) {
-    //        synch(context, &delay);
-    //        if(context->state != PAUSE){
-    //            event.type = SFM_REFRESH_EVENT;
-    //            SDL_PushEvent(&event);
-    //        }
-
-    ////        SDL_Delay((delay?delay:0.01)*1000 + 0.5);
-    //    }
-
     return 0;
 }

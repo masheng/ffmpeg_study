@@ -65,7 +65,7 @@ int synch(playerContext *context, double *delay){
         *delay = frame_delay;
     }
 
-   fprintf(stderr,"%f=%f av=>%f com==>%f=%f delay==>%f frame_delay==>%f %d=%d=%d\n",context->video_clock, context->audio_clock, context->video_clock-context->audio_clock,compare,context->audio_clock - get_currect_time(context),*delay,frame_delay,context->video_packet_queue.nb_packets,context->audio_packet_queue.nb_packets,context->video_frame_queue.nb_packets);
+   fprintf(stderr,"%f=%f av=>%f com==>%f=%f delay==>%f frame_delay==>%f %d=%d=%d\n",context->video_clock, context->audio_clock, context->video_clock-context->audio_clock,compare,context->audio_clock - get_currect_time(context),*delay,frame_delay,context->video_packet_queue.nb_packets,context->audio_packet_queue.nb_packets);
 
     return 0;
 }

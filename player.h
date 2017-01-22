@@ -47,7 +47,6 @@ typedef struct {
     int streamNum;
     PacketQueue video_packet_queue;
     PacketQueue audio_packet_queue;
-    FrameQueue video_frame_queue;
     double video_clock_pre;
     double video_clock;
     double audio_clock;
