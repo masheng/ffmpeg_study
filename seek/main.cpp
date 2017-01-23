@@ -5,6 +5,8 @@
 //audio delay
 //video refresh
 
+//ffmpeg 播放测试 实现同步 seek还有点小问题
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
