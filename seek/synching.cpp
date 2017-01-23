@@ -27,7 +27,7 @@ double getVideoClock(playerContext *context, AVFrame *pFrame){
     frame_delay = av_q2d(context->pFormatCtx->streams[VIDEO]->time_base);
     frame_delay += pFrame->repeat_pict / (frame_delay * 2);
     context->video_clock += frame_delay;
-
+    fprintf(stderr,"==================>%lld\n",);
     return pts;
 }
 
