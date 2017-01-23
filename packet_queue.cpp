@@ -23,13 +23,14 @@ void packet_queue_init(PacketQueue *queue)
     queue->nb_packets 		= 0;
     queue->mutex           = SDL_CreateMutex();
     queue->cond            = SDL_CreateCond();
+    queue->flush_flag   = 0;
 }
 
 int packet_queue_put(PacketQueue *queue, AVPacket *packet)
 {
     AVPacketList   *pkt_list;
 
-    if (av_dup_packet(packet) < 0)
+    if (queue->flush_flag==1 && av_dup_packet(packet) < 0)
     {
         return -1;
     }
@@ -73,6 +74,9 @@ int packet_queue_get(PacketQueue *queue, AVPacket *pkt, int block)
     SDL_LockMutex(queue->mutex);
     while(1)
     {
+        if(queue->flush_flag == 1){
+            return -1;
+        }
 
         pkt_list = queue->first_pkt;
         if (pkt_list != NULL)
@@ -106,7 +110,21 @@ int packet_queue_get(PacketQueue *queue, AVPacket *pkt, int block)
 }
 
 void packet_queue_flush(PacketQueue *queue){
+    AVPacketList *tmp;
+    SDL_LockMutex(queue->mutex);
+    queue->flush_flag=1;
+    while(queue->first_pkt && queue->first_pkt->next){
+        tmp=queue->first_pkt;
+        queue->first_pkt=queue->first_pkt->next;
+        av_freep(&tmp);
+    }
 
+    queue->first_pkt=
+    queue->last_pkt=NULL;
+    queue->nb_packets=
+    queue->size=0;
+    queue->flush_flag=0;
+    SDL_UnlockMutex(queue->mutex);
 }
 void packet_queue_destory(PacketQueue *queue){
     int i;

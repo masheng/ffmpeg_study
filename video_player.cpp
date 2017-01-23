@@ -79,13 +79,12 @@ Uint32 show_video(Uint32 interval, void *data){
     context->sdlRect.w=context->window_w;
     context->sdlRect.h=context->window_h;
     SDL_RenderCopy( context->sdlRenderer, context->sdlTexture, NULL, &context->sdlRect);
-    //    SDL_RenderCopy( context->sdlRenderer, context->sdlTexture, NULL, NULL);
     SDL_RenderPresent( context->sdlRenderer );
 
     double delay=0.0;
     synch(context, &delay);
-    return ((delay>0.01?delay:0.01)*1000 + 0.5);
-    //    av_frame_free(&pFrame);
+//    return ((delay>0.01?delay:0.01)*1000 + 0.5);
+    return 40;
 }
 
 int player_refresh_thread(void *opaque){

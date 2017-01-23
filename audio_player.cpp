@@ -104,6 +104,7 @@ int audio_decode_frame(playerContext *context, uint8_t *audio_buf)
         context->audio_clock=clock;
         double delay=context->audio_clock-get_currect_time(context);
 
+        /*
         if(delay > 0.01)
             SDL_Delay((delay*1000+0.5)/2);
         else if(delay < -1.0){
@@ -113,6 +114,7 @@ int audio_decode_frame(playerContext *context, uint8_t *audio_buf)
                 return -1;
             }
         }
+        */
     }
 
     ret = avcodec_send_packet(context->pCodecCtx[AUDIO], &packet);

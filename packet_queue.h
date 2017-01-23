@@ -14,6 +14,7 @@ typedef struct PacketQueue
     int             size;
     SDL_mutex       *mutex;
     SDL_cond        *cond;
+    int            flush_flag;
 }PacketQueue;
 
 void packet_queue_init(PacketQueue *queue);

@@ -77,19 +77,23 @@ typedef struct {
 
 int init(char *);
 int find_decode(playerContext *,int index,int type);
-int player_refresh_thread(void *);
 int player_read_frame(void *);
+void destory(playerContext *);
 
 int audio_init(playerContext *);
 int audio_decode_frame(playerContext *, uint8_t *audio_buf);
 
 int video_init(playerContext *);
 int video_decode_frame(playerContext *,AVFrame *);
+int player_refresh_thread(void *);
 Uint32 show_video(Uint32 interval, void *data);
+
 double getAudioClock(playerContext *);
 double getVideoClock(playerContext *, AVFrame *);
 double get_currect_time(playerContext *);
-int synch(playerContext *, double *);
+double get_duration(playerContext *);
 
-void destory(playerContext *);
+int synch(playerContext *, double *);
+int do_seek(playerContext *, double);
+
 #endif // PLAYER_H

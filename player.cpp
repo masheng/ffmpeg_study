@@ -60,7 +60,7 @@ int init(char *fileName){
 
     SDL_CreateThread(player_read_frame,NULL,context);
     //    SDL_CreateThread(showVideo,NULL,context);
-
+    get_duration(context);
     while(1)
     {
         if (context->state == QUIT)
@@ -89,6 +89,16 @@ int init(char *fileName){
             SDL_Quit();
             break;
         }
+        case SDL_KEYDOWN:
+            switch(event.key.keysym.sym){
+            case SDLK_LEFT:
+                do_seek(context,-10);
+                break;
+            case SDLK_RIGHT:
+                do_seek(context,10);
+                break;
+            }
+            break;
         default:
         {
             break;
